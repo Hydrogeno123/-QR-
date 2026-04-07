@@ -90,29 +90,32 @@ class VcQrAuthenticator:
 def main():
     print("=== QR Code + Visual Cryptography Authentication System ===")
     
+    output_dir = "Basic_Output"
+    os.makedirs(output_dir, exist_ok=True)
+    
     # User's secret authentication token
     secret_token = "USER_AUTH_TOKEN_778899"
     auth = VcQrAuthenticator(data=secret_token, size=150)
     
     # 1. Generate the secret QR code
     secret_qr = auth.generate_secret_qr()
-    Image.fromarray(secret_qr).save("1_secret_qr.png")
+    Image.fromarray(secret_qr).save(f"{output_dir}/1_Original_Secret_QR.png")
     print("[*] Generated Original Secret QR Code.")
     
     # 2. Split into two shares
     share1, share2 = auth.encrypt_shares(secret_qr)
-    Image.fromarray(share1).save("2_share1_server.png")
-    Image.fromarray(share2).save("3_share2_mobile.png")
+    Image.fromarray(share1).save(f"{output_dir}/2_Share1_Server.png")
+    Image.fromarray(share2).save(f"{output_dir}/3_Share2_Mobile.png")
     print("[*] Encrypted into Share 1 (Server) and Share 2 (Mobile App).")
     
     # 3. Simulate stacking the shares (e.g. scanning phone screen with a transparent overlay or digital composite)
     stacked = auth.combine_shares(share1, share2)
-    Image.fromarray(stacked).save("4_stacked_combined.png")
+    Image.fromarray(stacked).save(f"{output_dir}/4_Stacked_Combined.png")
     print("[*] Combined Shares (Stacked).")
     
     # 4. Restore the QR code from the stacked image for decoding
     restored_qr = auth.decrypt_qr(stacked)
-    Image.fromarray(restored_qr).save("5_restored_qr.png")
+    Image.fromarray(restored_qr).save(f"{output_dir}/5_Restored_QR.png")
     print("[*] Restored QR Code for Scanning.")
     
     # 5. Authenticate

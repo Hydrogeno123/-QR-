@@ -180,12 +180,12 @@ class VcQrSchemes:
 
 def save_and_verify(scheme_name, s1, s2, scale_factor, auth):
     os.makedirs(scheme_name, exist_ok=True)
-    Image.fromarray(s1).save(f"{scheme_name}/Share1_Server.png")
-    Image.fromarray(s2).save(f"{scheme_name}/Share2_Mobile.png")
+    Image.fromarray(s1).save(f"{scheme_name}/1_Share1_Server.png")
+    Image.fromarray(s2).save(f"{scheme_name}/2_Share2_Mobile.png")
     
     stacked, restored, token = auth.stack_and_decode(s1, s2, scale_factor=scale_factor)
-    Image.fromarray(stacked).save(f"{scheme_name}/Stacked.png")
-    Image.fromarray(restored).save(f"{scheme_name}/Restored.png")
+    Image.fromarray(stacked).save(f"{scheme_name}/3_Stacked_Combined.png")
+    Image.fromarray(restored).save(f"{scheme_name}/4_Restored_Secret_QR.png")
     
     print(f"[*] Saved to folder '{scheme_name}'")
     if token == auth.secret_data:

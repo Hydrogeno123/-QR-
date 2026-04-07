@@ -178,8 +178,9 @@ class VcQrSchemes:
         result = decoded[0].data.decode('utf-8') if decoded else None
         return stacked, restored, result
 
-def save_and_verify(scheme_name, s1, s2, scale_factor, auth):
+def save_and_verify(scheme_name, s1, s2, sec_img, scale_factor, auth):
     os.makedirs(scheme_name, exist_ok=True)
+    Image.fromarray(sec_img).save(f"{scheme_name}/0_Original_Secret_QR.png")
     Image.fromarray(s1).save(f"{scheme_name}/1_Share1_Server.png")
     Image.fromarray(s2).save(f"{scheme_name}/2_Share2_Mobile.png")
     
@@ -198,12 +199,12 @@ if __name__ == "__main__":
     
     # Scheme 1
     s1_1, s2_1, sec1 = auth.scheme_1_bvc()
-    save_and_verify("Scheme1_BVC", s1_1, s2_1, 2, auth)
+    save_and_verify("Scheme1_BVC", s1_1, s2_1, sec1, 2, auth)
     
     # Scheme 2
     s1_2, s2_2, sec2 = auth.scheme_2_one_meaningful(cover_data="PUBLIC-QR-STORE")
-    save_and_verify("Scheme2_OneMeaningful", s1_2, s2_2, 2, auth)
+    save_and_verify("Scheme2_OneMeaningful", s1_2, s2_2, sec2, 2, auth)
     
     # Scheme 3
     s1_3, s2_3, sec3 = auth.scheme_3_two_meaningful(cover_data_A="ALICE-PUB", cover_data_B="STORE-B")
-    save_and_verify("Scheme3_TwoMeaningful", s1_3, s2_3, 3, auth)
+    save_and_verify("Scheme3_TwoMeaningful", s1_3, s2_3, sec3, 3, auth)

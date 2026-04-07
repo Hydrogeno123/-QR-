@@ -22,6 +22,7 @@ sfrz1/
 ├── Scheme3_TwoMeaningful/     # 方案3：双有意义份额
 ├── main.py                     # 基础方案实现
 ├── advanced_schemes.py         # 三种高级方案实现
+├── check_images.py             # 图片检查工具
 ├── requirements.txt            # 依赖包
 └── README.md                   # 本文档
 ```
@@ -32,64 +33,53 @@ sfrz1/
 
 | 文件名 | 说明 |
 |--------|------|
-| `1_Original_Secret_QR.png` | 原始秘密QR码，包含认证令牌信息，用于验证整个流程 |
-| `2_Share1_Server.png` | 服务器端份额（Share 1），存储在服务器，单独看是随机噪声 |
-| `3_Share2_Mobile.png` | 移动端份额（Share 2），分发给用户设备，单独看是随机噪声 |
-| `4_Stacked_Combined.png` | 两个份额叠加后的图像，通过人眼可隐约看到QR码轮廓 |
-| `5_Restored_QR.png` | 恢复后的QR码，可被QR码扫描器读取并认证 |
+| `1_Original_Secret_QR.png` | **原始秘密QR码**，包含认证令牌信息，用于验证整个流程。可以直接用QR码扫描器读取。 |
+| `2_Share1_Server.png` | 服务器端份额（Share 1），存储在服务器，单独看是随机噪声，不含任何可识别信息。 |
+| `3_Share2_Mobile.png` | 移动端份额（Share 2），分发给用户设备，单独看是随机噪声，不含任何可识别信息。 |
+| `4_Stacked_Combined.png` | 两个份额叠加后的图像，通过人眼可隐约看到QR码轮廓，但直接扫描可能无法识别。 |
+| `5_Restored_QR.png` | 恢复后的QR码，经过处理优化，可被QR码扫描器读取并认证。 |
 
 ### Scheme1_BVC/ - 方案1：基础视觉密码学
 
+两个份额均为随机噪声，单独看起来毫无意义。只有叠加后才能恢复出秘密QR码。
+
 | 文件名 | 说明 |
 |--------|------|
+| `0_Original_Secret_QR.png` | **原始秘密QR码**，包含认证令牌信息，用于与恢复后的QR码对比。 |
 | `1_Share1_Server.png` | 服务器端份额，纯随机噪声，不含任何可识别信息 |
 | `2_Share2_Mobile.png` | 移动端份额，纯随机噪声，不含任何可识别信息 |
 | `3_Stacked_Combined.png` | 两个份额叠加后的图像，呈现秘密QR码 |
 | `4_Restored_Secret_QR.png` | 恢复处理后的秘密QR码，可直接扫描认证 |
 
+**特点**：最高安全性，任何单份额都无信息泄露风险
+
 ### Scheme2_OneMeaningful/ - 方案2：单有意义份额
+
+Share 1 是一个有意义的QR码（公开信息），Share 2 是随机噪声。叠加后恢复出秘密QR码。
 
 | 文件名 | 说明 |
 |--------|------|
+| `0_Original_Secret_QR.png` | **原始秘密QR码**，包含认证令牌信息，用于与恢复后的QR码对比。 |
 | `1_Share1_Server.png` | 服务器端份额，包含有意义的公开QR码信息 |
 | `2_Share2_Mobile.png` | 移动端份额，随机噪声 |
 | `3_Stacked_Combined.png` | 两个份额叠加后的图像，恢复出秘密QR码 |
 | `4_Restored_Secret_QR.png` | 恢复处理后的秘密QR码 |
 
+**特点**：一个份额看起来是正常QR码，更具迷惑性
+
 ### Scheme3_TwoMeaningful/ - 方案3：双有意义份额
+
+两个份额都是有意义的QR码（公开信息）。叠加后恢复出秘密QR码。
 
 | 文件名 | 说明 |
 |--------|------|
+| `0_Original_Secret_QR.png` | **原始秘密QR码**，包含认证令牌信息，用于与恢复后的QR码对比。 |
 | `1_Share1_Server.png` | 服务器端份额，包含有意义的公开QR码（如商家信息） |
 | `2_Share2_Mobile.png` | 移动端份额，包含有意义的公开QR码（如用户信息） |
 | `3_Stacked_Combined.png` | 两个份额叠加后的图像，恢复出秘密QR码 |
 | `4_Restored_Secret_QR.png` | 恢复处理后的秘密QR码 |
 
-## 实现的三种方案
-
-### Scheme 1: 基础视觉密码学（Basic VC）
-
-两个份额均为随机噪声，单独看起来毫无意义。只有叠加后才能恢复出秘密QR码。
-
-**特点**：最高安全性，任何单份额都无信息泄露风险
-
-**文件位置**：`Scheme1_BVC/`
-
-### Scheme 2: 单有意义份额
-
-Share 1 是一个有意义的QR码（公开信息），Share 2 是随机噪声。叠加后恢复出秘密QR码。
-
-**特点**：一个份额看起来是正常QR码，更具迷惑性
-
-**文件位置**：`Scheme2_OneMeaningful/`
-
-### Scheme 3: 双有意义份额
-
-两个份额都是有意义的QR码（公开信息）。叠加后恢复出秘密QR码。
-
 **特点**：两个份额都是正常QR码，隐蔽性最好
-
-**文件位置**：`Scheme3_TwoMeaningful/`
 
 ## 环境要求
 
@@ -122,7 +112,12 @@ pip install qrcode numpy opencv-python Pillow pyzbar
 python main.py
 ```
 
-输出到 `Basic_Output/` 文件夹，包含5张图片（详见上文"生成图片说明"）。
+输出到 `Basic_Output/` 文件夹，包含5张图片：
+- `1_Original_Secret_QR.png` - 原始秘密QR码
+- `2_Share1_Server.png` - 服务器端份额
+- `3_Share2_Mobile.png` - 移动端份额
+- `4_Stacked_Combined.png` - 叠加后的图像
+- `5_Restored_QR.png` - 恢复的QR码
 
 ### 运行高级方案
 
@@ -130,7 +125,15 @@ python main.py
 python advanced_schemes.py
 ```
 
-会生成三个方案的文件夹，每个文件夹包含4张图片（详见上文"生成图片说明"）。
+会生成三个方案的文件夹，每个文件夹包含4张图片。
+
+### 检查生成的图片
+
+```bash
+python check_images.py
+```
+
+该脚本会检查所有生成的图片，并尝试解码其中的QR码。
 
 ## 使用流程
 
@@ -164,6 +167,10 @@ python advanced_schemes.py
 - `scheme_2_one_meaningful()`：单有意义份额方案
 - `scheme_3_two_meaningful()`：双有意义份额方案
 
+### check_images.py
+
+辅助工具，用于检查生成的图片是否正常。
+
 ## 技术特点
 
 - **高安全性**：单个份额无法恢复任何信息
@@ -191,6 +198,13 @@ python advanced_schemes.py
 [*] Restored QR Code for Scanning.
 [+] Authentication SUCCESSFUL! Token matched: USER_AUTH_TOKEN_778899
 ```
+
+## 验证结果
+
+所有生成的图片都已验证：
+- ✅ `1_Original_Secret_QR.png` - 可正常解码
+- ✅ `5_Restored_QR.png` - 可正常解码
+- ✅ 所有方案的恢复QR码均可正常解码
 
 ## 参考文献
 
